@@ -1,0 +1,112 @@
+#ifndef VEC3_H
+#define VEC3_H
+
+#include <iostream>
+#include <cmath>
+
+struct vec3 {
+    union {
+        struct {
+            float x, y, z;
+        };
+        struct {
+            float r, g, b;
+        };
+        float e[3];
+    };
+
+    vec3() : e{0, 0, 0} {}
+    vec3(float x, float y, float z) : e{x, y, z} {}
+
+    vec3 operator-() const { return vec3(-x, -y, -z); }
+    float operator[](int i) const { return e[i]; }
+    float& operator[](int i) { return e[i]; }
+
+    vec3& operator+=(const vec3 &v) {
+        x += v.x;
+        y += v.y;
+        z += v.z;
+        return *this;
+    }
+
+    vec3& operator*=(float t) {
+        x *= t;
+        y *= t;
+        z *= t;
+        return *this;
+    }
+
+    vec3& operator/=(float t) {
+        x /= t;
+        y /= t;
+        z /= t;
+        return *this;
+    }
+
+    float dot(const vec3 &v) const {
+        return x*v.x + y*v.y + z*v.z;
+    }
+
+    vec3 cross(const vec3 &v) {
+        return vec3(y*v.z - z*v.y,
+                    z*v.x - x*v.z,
+                    x*v.y - y*v.x);
+    }
+
+    vec3 unit() const {
+        const float len = length();
+        return vec3(x / len,
+                    y / len,
+                    z / len);
+    }
+
+    float length() const { return sqrtf(x*x + y*y + z*z); }
+
+    float lengthsq() const { return x*x + y*y + z*z; }
+};
+
+// Type aliases for vec3
+using point3 = vec3; // 3D point
+using color = vec3; // RGB color
+
+inline std::ostream& operator<<(std::ostream &out, const vec3 &v) {
+    return out << v.x << ' ' << v.y << ' ' << v.z;
+}
+
+inline vec3 operator+(const vec3 &u, const vec3 &v) {
+    return vec3(u.x + v.x, u.y + v.y, u.z + v.z);
+}
+
+inline vec3 operator-(const vec3 &u, const vec3 &v) {
+    return vec3(u.x - v.x, u.y - v.y, u.z - v.z);
+}
+
+inline vec3 operator*(const vec3 &u, const vec3 &v) {
+    return vec3(u.x * v.x, u.y * v.y, u.z * v.z);
+}
+
+inline vec3 operator*(float t, const vec3 &v) {
+    return vec3(t * v.x, t * v.y, t * v.z); 
+}
+
+inline vec3 operator*(const vec3 &v, float t) {
+    return t * v; 
+}
+
+inline vec3 operator/(const vec3 &v, float t) {
+    return vec3(v.x / t,
+                v.y / t,
+                v.z / t);
+}
+
+inline float dot(const vec3 &u, const vec3 &v) {
+    return u.x*v.x + u.y*v.y + u.z*v.z;
+}
+
+inline vec3 cross(const vec3 &u, const vec3 &v) {
+    return vec3(u.y*v.z - u.z*v.y,
+                u.z*v.x - u.x*v.z,
+                u.x*v.y - u.y*v.x);
+}
+
+#endif // VEC3_H
