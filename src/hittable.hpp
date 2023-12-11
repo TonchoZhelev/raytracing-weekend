@@ -1,10 +1,12 @@
 #ifndef HITTABLE_H
 #define HITTABLE_H
 
-#include "ray.hpp"
 #include <cstddef>
 #include <memory>
 #include <vector>
+
+#include "interval.hpp"
+#include "ray.hpp"
 
 struct HitRecord {
     point3 p;
@@ -26,7 +28,7 @@ class IHittable {
     public:
         // TODO: Might be better to return rec in some way, instead of using it as an out parameter.
         // see the Sphere::hit() method in sphere.hpp for reference.
-        virtual bool hit(const ray &r, float ray_tmin, float ray_tmax, HitRecord &rec) const = 0;
+        virtual bool hit(const ray &r, Interval ray_t, HitRecord &rec) const = 0;
 
         virtual ~IHittable() = default;
 };
@@ -45,13 +47,13 @@ class HittableList : public IHittable {
             objects.push_back(object); 
         }
 
-        bool hit(const ray &r, float ray_tmin, float ray_tmax, HitRecord &rec) const override {
+        bool hit(const ray &r, Interval ray_t, HitRecord &rec) const override {
             HitRecord temp_rec;
             bool hit_anything = false;
-            float closest_so_far = ray_tmax;
+            float closest_so_far = ray_t.max;
 
             for (const auto &object : objects) {
-                bool hit = object->hit(r, ray_tmin, closest_so_far, temp_rec);
+                bool hit = object->hit(r, Interval(ray_t.min, closest_so_far), temp_rec);
                 if (hit) {
                     hit_anything = true;
                     closest_so_far = temp_rec.t;

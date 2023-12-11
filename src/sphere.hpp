@@ -2,6 +2,7 @@
 #define SPHERE_H
 
 #include "hittable.hpp"
+#include "interval.hpp"
 #include "vec3.hpp"
 
 class Sphere : public IHittable {
@@ -12,7 +13,7 @@ class Sphere : public IHittable {
     public:
         Sphere(point3 center, float radius) : _center(center), _radius(radius) {}
 
-        bool hit(const ray &r, float ray_tmin, float ray_tmax, HitRecord &rec) const override {
+        bool hit(const ray &r, Interval ray_t, HitRecord &rec) const override {
             vec3 oc = r.origin() - _center;
             float a = r.direction().lengthsq();
             float half_b = oc.dot(r.direction());
@@ -26,9 +27,9 @@ class Sphere : public IHittable {
 
             // Find the nearest root that lies in the acceptable range.
             float root = (-half_b - sqrtd) / a;
-            if (root <= ray_tmin || ray_tmax <= root) {
+            if (!ray_t.surrounds(root)) {
                 root = (-half_b + sqrtd) / a;
-                if (root <= ray_tmin || ray_tmax <= root) {
+                if (!ray_t.surrounds(root)) {
                     return false;
                 }
             }
