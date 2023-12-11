@@ -5,19 +5,20 @@
 
 class ray {
     private:
-        point3 orig;
-        vec3 dir;
+        point3 _origin;
+        vec3 _direction;
+
     public:
         ray() {}
 
         ray(const point3 &origin, const vec3 &direction)
-            : orig(origin), dir(direction) {}
+            : _origin(origin), _direction(direction) {}
 
-        point3 origin() const { return orig; }
-        vec3 direction() const { return dir; }
+        point3 origin() const { return _origin; }
+        vec3 direction() const { return _direction; }
 
         point3 at(float t) const {
-            return orig + t*dir;
+            return _origin + t * _direction;
         }
 };
 
