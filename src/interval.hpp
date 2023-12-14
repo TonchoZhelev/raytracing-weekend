@@ -5,17 +5,17 @@
 
 class Interval {
     public:
-        double min, max;
+        float min, max;
 
-        Interval(double min, double max) : min(min), max(max) {}
+        Interval(float min, float max) : min(min), max(max) {}
 
         Interval() : min(+infinity), max(-infinity) {} // Empty interval
 
-        bool contains(double x) const {
+        bool contains(float x) const {
             return min <= x && x <= max;
         }
 
-        bool surrounds(double x) const {
+        bool surrounds(float x) const {
             return min < x && x < max;
         }
 

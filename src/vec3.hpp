@@ -1,6 +1,7 @@
 #ifndef VEC3_H
 #define VEC3_H
 
+#include "rtweekend.hpp"
 #include <iostream>
 #include <cmath>
 
@@ -63,6 +64,14 @@ struct vec3 {
     float length() const { return sqrtf(x*x + y*y + z*z); }
 
     float lengthsq() const { return x*x + y*y + z*z; }
+
+    static vec3 random() {
+        return vec3(random_float(), random_float(), random_float());
+    }
+
+    static vec3 random(float min, float max) {
+        return vec3(random_float(min, max), random_float(min, max), random_float(min, max));
+    }
 };
 
 // Type aliases for vec3
@@ -107,6 +116,28 @@ inline vec3 cross(const vec3 &u, const vec3 &v) {
     return vec3(u.y*v.z - u.z*v.y,
                 u.z*v.x - u.x*v.z,
                 u.x*v.y - u.y*v.x);
+}
+
+inline vec3 random_in_unit_sphere() {
+    while (true) {
+        vec3 p = vec3::random(-1, 1);
+        if (p.lengthsq() < 1) {
+            return p;
+        }
+    }
+}
+
+inline vec3 random_unit_vector() {
+    return random_in_unit_sphere().unit();
+}
+
+inline vec3 random_on_hemisphere(const vec3& normal) {
+    vec3 on_unit_sphere = random_unit_vector();
+    if (on_unit_sphere.dot(normal) > 0.0f) { // In the same hemisphere as the normal
+        return on_unit_sphere;
+    } else {
+        return -on_unit_sphere;
+    }
 }
 
 #endif // VEC3_H
