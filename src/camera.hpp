@@ -5,26 +5,32 @@
 #include "color.hpp"
 #include "hittable.hpp"
 #include "vec3.hpp"
+#include <iomanip>
+#include <iostream>
+#include <ostream>
 
 class Camera {
     public:
         float aspect_ratio = 1.0f; // Ratio of image width over height 
         int   image_width = 100;
+        int   samples_per_pixel = 10;
 
         void render(const IHittable& world) {
             initialize();
 
+            std::clog << "width: " << image_width << " height: " << image_height << std::endl;
             std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
 
             for (int j = 0; j < image_height; ++j) {
-                std::clog << "\rScanlines remaining: " << image_height - j << std::flush;
+                std::clog << "\rScanlines remaining: " << std::setw(3) << image_height - j << std::flush;
                 for (int i = 0; i < image_width; ++i) {
-                    point3 pixel_center = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
-                    vec3 ray_direction = pixel_center - center;
-                    ray r(center, ray_direction);
+                    color pixel_color(0,0,0);
 
-                    color pixel_color = ray_color(r, world);
-                    write_color(std::cout, pixel_color);
+                    for (int sample = 0; sample < samples_per_pixel; ++sample) {
+                        ray r = get_ray(i, j);
+                        pixel_color += ray_color(r, world);
+                    }
+                    write_color(std::cout, pixel_color, samples_per_pixel);
                 }
             }
 
@@ -72,6 +78,25 @@ class Camera {
             vec3 unit_direction = r.direction().unit();
             float a = 0.5f * (unit_direction.y + 1.0f);
             return (1.0f - a) * color(1.0f, 1.0f, 1.0f) + a * color(0.5f, 0.7f, 1.0f);
+        }
+
+        ray get_ray(int i, int j) const {
+            // Get a randomly sampled camera ray for the pixel at location i,j.
+
+            point3 pixel_center = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
+            vec3 pixel_sample = pixel_center + pixel_sample_square();
+
+            point3 ray_origin = center;
+            vec3 ray_direction = pixel_sample - ray_origin;
+
+            return ray(ray_origin, ray_direction);
+        }
+
+        vec3 pixel_sample_square() const {
+            // Returns a random point in the square surrounding a pixel at the origin.
+            float px = -0.5 + random_double();
+            float py = -0.5 + random_double();
+            return (px * pixel_delta_u) + (py * pixel_delta_u);
         }
 };
 
