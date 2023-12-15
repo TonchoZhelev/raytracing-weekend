@@ -3,7 +3,7 @@
 #include "hittable.hpp"
 #include "sphere.hpp"
 
-int main(int argc, char** argv) {
+int main(int const argc, char const *const *const argv) {
     // World
     HittableList world;
     world.add(std::make_shared<Sphere>(point3(0, 0, -1), 0.5f));
