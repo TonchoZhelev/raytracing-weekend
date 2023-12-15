@@ -3,7 +3,8 @@
 
 #include "ray.hpp"
 #include "vec3.hpp"
-#include "hittable.hpp"
+
+class HitRecord;
 
 class Material {
     public:
