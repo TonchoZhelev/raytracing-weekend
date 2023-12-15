@@ -1,15 +1,8 @@
 #ifndef RTWEEKEND_H
 #define RTWEEKEND_H
 
-#include <cmath>
 #include <cstdlib>
 #include <limits>
-#include <memory>
-
-// Usings
-using std::shared_ptr;
-using std::make_shared;
-using std::sqrt;
 
 // Constants
 const float infinity = std::numeric_limits<float>::infinity();

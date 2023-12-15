@@ -2,12 +2,21 @@
 #include "vec3.hpp"
 #include "hittable.hpp"
 #include "sphere.hpp"
+#include "material.hpp"
 
 int main(int const argc, char const *const *const argv) {
     // World
     HittableList world;
-    world.add(std::make_shared<Sphere>(point3(0, 0, -1), 0.5f));
-    world.add(std::make_shared<Sphere>(point3(0, -100.5f, -1), 100.0f));
+
+    auto material_ground = std::make_shared<Lambertian>(color(0.8, 0.8, 0.0));
+    auto material_center = std::make_shared<Lambertian>(color(0.7, 0.3, 0.3));
+    auto material_left   = std::make_shared<Metal>(color(0.8, 0.8, 0.8));
+    auto material_right  = std::make_shared<Metal>(color(0.8, 0.6, 0.2));
+
+    world.add(std::make_shared<Sphere>(point3( 0.0, -100.5, -1.0), 100.0, material_ground));
+    world.add(std::make_shared<Sphere>(point3( 0.0,    0.0, -1.0),   0.5, material_center));
+    world.add(std::make_shared<Sphere>(point3(-1.0,    0.0, -1.0),   0.5, material_left));
+    world.add(std::make_shared<Sphere>(point3( 1.0,    0.0, -1.0),   0.5, material_right));
 
     Camera cam;
 

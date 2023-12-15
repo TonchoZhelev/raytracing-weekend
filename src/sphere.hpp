@@ -3,15 +3,19 @@
 
 #include "hittable.hpp"
 #include "interval.hpp"
+#include "material.hpp"
 #include "vec3.hpp"
+#include <memory>
 
 class Sphere : public IHittable {
     private:
         point3 _center;
         float _radius;
+        std::shared_ptr<IMaterial> _mat;
 
     public:
-        Sphere(point3 center, float radius) : _center(center), _radius(radius) {}
+        Sphere(point3 center, float radius, std::shared_ptr<IMaterial> material) 
+            : _center(center), _radius(radius), _mat(material) {}
 
         bool hit(const ray &r, Interval ray_t, HitRecord &rec) const override {
             vec3 oc = r.origin() - _center;
@@ -38,6 +42,7 @@ class Sphere : public IHittable {
             rec.p = r.at(rec.t);
             vec3 outward_normal = (rec.p - _center) / _radius;
             rec.set_face_normal(r, outward_normal);
+            rec.mat = _mat;
 
             return true;
         }

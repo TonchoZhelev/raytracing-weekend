@@ -1,13 +1,15 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include <iomanip>
+#include <iostream>
+#include <ostream>
+
 #include "rtweekend.hpp"
 #include "color.hpp"
 #include "hittable.hpp"
 #include "vec3.hpp"
-#include <iomanip>
-#include <iostream>
-#include <ostream>
+#include "material.hpp"
 
 class Camera {
     public:
@@ -75,12 +77,16 @@ class Camera {
 
             // If we've exceeded the ray bounce limit, no more light is gathered.
             if (depth <= 0) {
-                return color(0,0,0);
+                return color(0, 0, 0);
             }
 
             if (world.hit(r, Interval(0.001, infinity), rec)) {
-                vec3 direction = rec.normal + random_unit_vector();
-                return 0.5f * ray_color(ray(rec.p, direction), depth - 1, world);
+                ray scattered;
+                color attenuation;
+                if (rec.mat->scatter(r, rec, attenuation, scattered)) {
+                    return attenuation * ray_color(scattered, depth - 1, world);
+                }
+                return color(0, 0, 0);
             }
 
             vec3 unit_direction = r.direction().unit();

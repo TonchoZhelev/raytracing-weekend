@@ -65,6 +65,12 @@ struct vec3 {
 
     float lengthsq() const { return x*x + y*y + z*z; }
 
+    bool near_zero() const {
+        // Return true if the vector is close to zero in all dimentions.
+        float s = 1e-8;
+        return (fabsf(e[0]) < s) && (fabsf(e[1]) < s) && (fabsf(e[2]) < s);
+    }
+
     static vec3 random() {
         return vec3(random_float(), random_float(), random_float());
     }
@@ -138,6 +144,10 @@ inline vec3 random_on_hemisphere(const vec3& normal) {
     } else {
         return -on_unit_sphere;
     }
+}
+
+inline vec3 reflect(const vec3& v, const vec3& n) {
+    return v - 2 * v.dot(n) * n;
 }
 
 #endif // VEC3_H
