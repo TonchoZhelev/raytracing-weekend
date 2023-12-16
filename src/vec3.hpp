@@ -124,6 +124,15 @@ inline vec3 cross(const vec3 &u, const vec3 &v) {
                 u.x*v.y - u.y*v.x);
 }
 
+inline vec3 random_in_unit_disk() {
+    while(true) {
+        vec3 p = vec3(random_float(-1, 1), random_float(-1, 1), 0);
+        if (p.lengthsq() < 1) {
+            return p;
+        }
+    }
+}
+
 inline vec3 random_in_unit_sphere() {
     while (true) {
         vec3 p = vec3::random(-1, 1);
