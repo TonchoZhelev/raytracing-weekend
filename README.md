@@ -1,5 +1,5 @@
 # raytracing-weekend
-My attempt at completing the Raytracing in One Weekend book
+Completing the Raytracing in One Weekend book
 
 # Nice Images
 <img src="https://raw.githubusercontent.com/TonchoZhelev/raytracing-weekend/main/niceimages/image.png">
